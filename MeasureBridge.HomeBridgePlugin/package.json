@@ -1,0 +1,13 @@
+{
+  "name": "measure-bridge.home-bridge-plugin",
+  "version": "0.0.0",
+  "description": "MeasureBridge.HomeBridgePlugin",
+  "main": "app.js",
+  "author": {
+    "name": ""
+  },
+  "engines": {
+    "node": ">=0.12.0",
+    "homebridge": ">=0.2.0"
+  }
+}
