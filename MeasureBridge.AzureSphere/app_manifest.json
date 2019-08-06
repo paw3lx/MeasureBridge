@@ -1,0 +1,14 @@
+{
+  "SchemaVersion": 1,
+  "Name" : "MeasureBridge_AzureSphere",
+  "ComponentId" : "f632cec4-b092-4b47-b4fc-eb2fb93affc0",
+  "EntryPoint": "/bin/app",
+  "CmdArgs": [],
+  "Capabilities": {
+    "AllowedConnections": [],
+    "Gpio": [ 9 ],
+    "Uart": [],
+    "WifiConfig": false
+  },
+  "ApplicationType":"Default"
+}
