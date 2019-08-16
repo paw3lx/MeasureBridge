@@ -5,10 +5,7 @@
   "EntryPoint": "/bin/app",
   "CmdArgs": [],
   "Capabilities": {
-    "AllowedConnections": [],
-    "Gpio": [ 9 ],
-    "Uart": [],
-    "WifiConfig": false
+    "SpiMaster": [ "ISU1" ]
   },
   "ApplicationType":"Default"
 }
