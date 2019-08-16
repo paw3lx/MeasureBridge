@@ -8,6 +8,7 @@
 #include "epoll_timerfd_utilities.h"
 #include "mt3620.h"
 #include "ac_current_click.h"
+#include "i2c.h"
 
 #include <applibs/log.h>
 #include <applibs/gpio.h>
@@ -30,7 +31,9 @@ int main(void)
 		terminationRequired = true;
 	}
 
-	float ac = GetCurrentAC();
+	if (initI2c() == -1) {
+		return -1;
+	}
 
 	// Use epoll to wait for events and trigger handlers, until an error or SIGTERM happens
 	while (!terminationRequired) {
