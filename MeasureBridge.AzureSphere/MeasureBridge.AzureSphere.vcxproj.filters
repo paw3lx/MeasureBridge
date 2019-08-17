@@ -34,6 +34,9 @@
     <ClCompile Include="oled.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="spi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="applibs_versions.h">
@@ -58,6 +61,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="font.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="spi.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

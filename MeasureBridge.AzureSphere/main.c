@@ -7,6 +7,7 @@
 #include "applibs_versions.h"
 #include "epoll_timerfd_utilities.h"
 #include "mt3620.h"
+#include "spi.h"
 #include "ac_current_click.h"
 #include "i2c.h"
 
@@ -19,7 +20,6 @@ static void TerminationHandler(int signalNumber);
 static void ClosePeripheralsAndHandlers(void);
 
 static int epollFd = -1;
-static int spiFd = -1;
 
 // Termination state
 static volatile sig_atomic_t terminationRequired = false;
@@ -31,18 +31,12 @@ int main(void)
 		terminationRequired = true;
 	}
 
-	if (initI2c() == -1) {
-		return -1;
-	}
-
 	// Use epoll to wait for events and trigger handlers, until an error or SIGTERM happens
 	while (!terminationRequired) {
 		if (WaitForEventAndCallHandler(epollFd) != 0) {
 			terminationRequired = true;
 		}
 	}
-
-
 
 	ClosePeripheralsAndHandlers();
 	Log_Debug("Application exiting.\n");
@@ -64,29 +58,11 @@ static int InitPeripheralsAndHandlers(void)
 		return -1;
 	}
 
-	SPIMaster_Config config;
-	int ret = SPIMaster_InitConfig(&config);
-	if (ret != 0) {
-		Log_Debug("ERROR: SPIMaster_InitConfig = %d errno = %s (%d)\n", ret, strerror(errno),
-			errno);
-		return -1;
-	}
-	config.csPolarity = SPI_ChipSelectPolarity_ActiveLow;
-	spiFd = SPIMaster_Open(MT3620_ISU1_SPI, MT3620_SPI_CS_A, &config);
-	if (spiFd < 0) {
-		Log_Debug("ERROR: SPIMaster_Open: errno=%d (%s)\n", errno, strerror(errno));
+	if (initI2c() == -1) {
 		return -1;
 	}
 
-	int result = SPIMaster_SetBusSpeed(spiFd, 976000);
-	if (result != 0) {
-		Log_Debug("ERROR: SPIMaster_SetBusSpeed: errno=%d (%s)\n", errno, strerror(errno));
-		return -1;
-	}
-
-	result = SPIMaster_SetMode(spiFd, SPI_Mode_0);
-	if (result != 0) {
-		Log_Debug("ERROR: SPIMaster_SetMode: errno=%d (%s)\n", errno, strerror(errno));
+	if (InitSpi() == -1) {
 		return -1;
 	}
 

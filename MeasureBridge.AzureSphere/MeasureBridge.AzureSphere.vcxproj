@@ -43,6 +43,7 @@
     <ClCompile Include="main.c" />
     <ClCompile Include="oled.c" />
     <ClCompile Include="sd1306.c" />
+    <ClCompile Include="spi.c" />
     <UpToDateCheckInput Include="app_manifest.json" />
   </ItemGroup>
   <ItemGroup>
@@ -54,6 +55,7 @@
     <ClInclude Include="mt3620.h" />
     <ClInclude Include="oled.h" />
     <ClInclude Include="sd1306.h" />
+    <ClInclude Include="spi.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
