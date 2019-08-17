@@ -24,7 +24,7 @@ int InitSpi(void)
 		return -1;
 	}
 	config.csPolarity = SPI_ChipSelectPolarity_ActiveLow;
-	spiFd = SPIMaster_Open(MT3620_ISU1_SPI, MT3620_SPI_CS_A, &config);
+	spiFd = SPIMaster_Open(MT3620_ISU1_SPI, MT3620_SPI_CS_B, &config);
 	if (spiFd < 0) {
 		Log_Debug("ERROR: SPIMaster_Open: errno=%d (%s)\n", errno, strerror(errno));
 		return -1;

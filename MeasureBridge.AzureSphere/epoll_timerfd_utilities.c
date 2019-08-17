@@ -122,7 +122,7 @@ int CreateTimerFdAndAddToEpoll(int epollFd, const struct timespec* period,
 int WaitForEventAndCallHandler(int epollFd)
 {
 	struct epoll_event event;
-	int numEventsOccurred = epoll_wait(epollFd, &event, 1, -1);
+	int numEventsOccurred = epoll_wait(epollFd, &event, 1, 1);
 
 	if (numEventsOccurred == -1) {
 		if (errno == EINTR) {

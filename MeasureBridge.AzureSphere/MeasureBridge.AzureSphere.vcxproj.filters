@@ -37,6 +37,15 @@
     <ClCompile Include="spi.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="parson.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="deviceTwin.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="azure_iot_utilities.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="applibs_versions.h">
@@ -64,6 +73,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="spi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="connection_strings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="deviceTwin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="parson.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="azure_iot_utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
