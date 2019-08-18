@@ -29,7 +29,7 @@ static int InitPeripheralsAndHandlers(void);
 static void TerminationHandler(int signalNumber);
 static void ClosePeripheralsAndHandlers(void);
 
-static int epollFd = -1;
+int epollFd = -1;
 
 // Termination state
 volatile sig_atomic_t terminationRequired = false;
@@ -50,11 +50,6 @@ int main(void)
 		if (WaitForEventAndCallHandler(epollFd) != 0) {
 			terminationRequired = true;
 		}
-		// Setup the IoT Hub client.
-		// Notes:
-		// - it is safe to call this function even if the client has already been set up, as in
-		//   this case it would have no effect;
-		// - a failure to setup the client is a fatal error.
 		if (!AzureIoT_SetupClient()) {
 			Log_Debug("ERROR: Failed to set up IoT Hub client\n");
 			break;
@@ -130,5 +125,6 @@ static void TerminationHandler(int signalNumber)
 static void ClosePeripheralsAndHandlers(void)
 {
 	Log_Debug("Closing file descriptors.\n");
-	CloseFdAndPrintError(spiFd, "Spi");
+	closeSpi();
+	closeI2c();
 }
