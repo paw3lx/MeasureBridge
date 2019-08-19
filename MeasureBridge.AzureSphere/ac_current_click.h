@@ -8,4 +8,6 @@
 
 int ReadACCurrentBytes(uint8_t* byte_1, uint8_t* byte_2);
 
-float GetCurrentAC(void);
+float GetCurrentADC(void);
+
+float GetCurrentAC(uint8_t measurements);

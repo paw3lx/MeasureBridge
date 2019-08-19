@@ -7,22 +7,36 @@
 #include "applibs_versions.h"
 #include "epoll_timerfd_utilities.h"
 #include "mt3620.h"
+#include "spi.h"
 #include "ac_current_click.h"
 #include "i2c.h"
+#include "deviceTwin.h"
+#include "azure_iot_utilities.h"
+#include "connection_strings.h"
 
 #include <applibs/log.h>
 #include <applibs/gpio.h>
 #include <applibs/spi.h>
+#include <applibs/wificonfig.h>
+#include <azureiot/iothub_device_client_ll.h>
+
+// Provide local access to variables in other files
+extern twin_t twinArray[];
+extern int twinArraySize;
+extern IOTHUB_DEVICE_CLIENT_LL_HANDLE iothubClientHandle;
 
 static int InitPeripheralsAndHandlers(void);
 static void TerminationHandler(int signalNumber);
 static void ClosePeripheralsAndHandlers(void);
 
-static int epollFd = -1;
-static int spiFd = -1;
+int epollFd = -1;
 
 // Termination state
-static volatile sig_atomic_t terminationRequired = false;
+volatile sig_atomic_t terminationRequired = false;
+bool versionStringSent = false;
+
+int clickSocket1Relay1Fd = -1;
+int clickSocket1Relay2Fd = -1;
 
 int main(void)
 {
@@ -31,18 +45,26 @@ int main(void)
 		terminationRequired = true;
 	}
 
-	if (initI2c() == -1) {
-		return -1;
-	}
-
 	// Use epoll to wait for events and trigger handlers, until an error or SIGTERM happens
 	while (!terminationRequired) {
 		if (WaitForEventAndCallHandler(epollFd) != 0) {
 			terminationRequired = true;
 		}
+		if (!AzureIoT_SetupClient()) {
+			Log_Debug("ERROR: Failed to set up IoT Hub client\n");
+			break;
+		}
+
+		WifiConfig_ConnectedNetwork network;
+		int result = WifiConfig_GetCurrentNetwork(&network);
+
+		if (result < 0) {
+			Log_Debug("INFO: Not currently connected to a WiFi network.\n");
+		}
+		else {
+			AzureIoT_DoPeriodicTasks();
+		}
 	}
-
-
 
 	ClosePeripheralsAndHandlers();
 	Log_Debug("Application exiting.\n");
@@ -64,31 +86,33 @@ static int InitPeripheralsAndHandlers(void)
 		return -1;
 	}
 
-	SPIMaster_Config config;
-	int ret = SPIMaster_InitConfig(&config);
-	if (ret != 0) {
-		Log_Debug("ERROR: SPIMaster_InitConfig = %d errno = %s (%d)\n", ret, strerror(errno),
-			errno);
-		return -1;
-	}
-	config.csPolarity = SPI_ChipSelectPolarity_ActiveLow;
-	spiFd = SPIMaster_Open(MT3620_ISU1_SPI, MT3620_SPI_CS_A, &config);
-	if (spiFd < 0) {
-		Log_Debug("ERROR: SPIMaster_Open: errno=%d (%s)\n", errno, strerror(errno));
+	if (initI2c() == -1) {
 		return -1;
 	}
 
-	int result = SPIMaster_SetBusSpeed(spiFd, 976000);
-	if (result != 0) {
-		Log_Debug("ERROR: SPIMaster_SetBusSpeed: errno=%d (%s)\n", errno, strerror(errno));
+	if (InitSpi() == -1) {
 		return -1;
 	}
 
-	result = SPIMaster_SetMode(spiFd, SPI_Mode_0);
-	if (result != 0) {
-		Log_Debug("ERROR: SPIMaster_SetMode: errno=%d (%s)\n", errno, strerror(errno));
-		return -1;
+	// Traverse the twin Array and for each GPIO item in the list open the file descriptor
+	for (int i = 0; i < twinArraySize; i++) {
+
+		// Verify that this entry is a GPIO entry
+		if (twinArray[i].twinGPIO != NO_GPIO_ASSOCIATED_WITH_TWIN) {
+
+			*twinArray[i].twinFd = -1;
+
+			// For each item in the data structure, initialize the file descriptor and open the GPIO for output.  Initilize each GPIO to its specific inactive state.
+			*twinArray[i].twinFd = (int)GPIO_OpenAsOutput(twinArray[i].twinGPIO, GPIO_OutputMode_PushPull, twinArray[i].active_high ? GPIO_Value_Low : GPIO_Value_High);
+
+			if (*twinArray[i].twinFd < 0) {
+				Log_Debug("ERROR: Could not open LED %d: %s (%d).\n", twinArray[i].twinGPIO, strerror(errno), errno);
+				return -1;
+			}
+		}
 	}
+
+	AzureIoT_SetDeviceTwinUpdateCallback(&deviceTwinChangedHandler);
 
 	return 0;
 }
@@ -101,5 +125,6 @@ static void TerminationHandler(int signalNumber)
 static void ClosePeripheralsAndHandlers(void)
 {
 	Log_Debug("Closing file descriptors.\n");
-	CloseFdAndPrintError(spiFd, "Spi");
+	closeSpi();
+	closeI2c();
 }

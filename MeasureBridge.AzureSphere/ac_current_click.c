@@ -4,9 +4,8 @@
 #include <applibs/spi.h>
 #include <applibs/log.h>
 
-
-extern int spiFd = -1;
-
+extern int spiFd;
+void HAL_Delay(int delayTime);
 
 int ReadACCurrentBytes(uint8_t* byte_1, uint8_t* byte_2)
 {
@@ -41,23 +40,43 @@ int ReadACCurrentBytes(uint8_t* byte_1, uint8_t* byte_2)
 	return transferredBytes;
 }
 
-float GetCurrentAC(void)
+float GetCurrentADC(void)
 {
 	uint8_t byte_1 = 0, byte_2 = 0;
 	
 	ReadACCurrentBytes(&byte_1, &byte_2);
 
 	uint16_t msb_1 = byte_2;
-	msb_1 = msb_1 >> 1;
+	msb_1 = msb_1 >> 1; // shift right 1 bit to remove B01
 
-	uint16_t msb_0 = byte_1 & 0b00011111;
-	msb_0 = msb_0 << 7;
+	uint16_t msb_0 = byte_1 & 0b00011111; // mask the 2 unknown bits and the null bit
+	msb_0 = msb_0 << 7; // shift left 7 bits
 
 	uint16_t msb = msb_0 + msb_1;
 
-	float average = (float)(msb / 4095.0) * 2.048;
+	return msb;
+}
 
-	Log_Debug("INFO: byte_1 %d, byte_2 %d, ac %f \n", byte_1, byte_2, average);
+float GetCurrentAC(uint8_t measurements)
+{
+	float average = 0.0;
+	for (uint8_t i = 0; i < measurements; i++) {
+		float adc = GetCurrentADC();
+		average += adc;
+		HAL_Delay(100);
+	}
 
-	return average;
+	average = (float) average / measurements;
+
+	float ac = (float)(average / 4095.0) * 2.048;
+
+	return ac;
+}
+
+void HAL_Delay(int delayTime)
+{
+	struct timespec ts;
+	ts.tv_sec = 0;
+	ts.tv_nsec = delayTime * 10000;
+	nanosleep(&ts, NULL);
 }

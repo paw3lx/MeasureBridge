@@ -54,8 +54,8 @@ extern volatile sig_atomic_t terminationRequired;
 ///     Initializes the I2C interface.
 /// </summary>
 /// <returns>0 on success, or -1 on failure</returns>
-int initI2c(void) {
-
+int initI2c(void) 
+{
 	i2cFd = I2CMaster_Open(MT3620_ISU2_I2C);
 	if (i2cFd < 0) {
 		Log_Debug("ERROR: I2CMaster_Open: errno=%d (%s)\n", errno, strerror(errno));
@@ -75,12 +75,9 @@ int initI2c(void) {
 	}
 
 	// Start OLED
-	if (oled_init())
-	{
+	if (oled_init()) {
 		Log_Debug("OLED not found!\n");
-	}
-	else
-	{
+	} else {
 		Log_Debug("OLED found!\n");
 	}
 
@@ -90,7 +87,7 @@ int initI2c(void) {
 /// <summary>
 ///     Closes the I2C interface File Descriptors.
 /// </summary>
-void closeI2c(void) {
-
+void closeI2c(void)
+{
 	CloseFdAndPrintError(i2cFd, "i2c");
 }

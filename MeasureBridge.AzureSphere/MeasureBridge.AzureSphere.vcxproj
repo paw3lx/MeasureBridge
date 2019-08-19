@@ -38,22 +38,31 @@
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
     <ClCompile Include="ac_current_click.c" />
+    <ClCompile Include="azure_iot_utilities.c" />
+    <ClCompile Include="deviceTwin.c" />
     <ClCompile Include="epoll_timerfd_utilities.c" />
     <ClCompile Include="i2c.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="oled.c" />
+    <ClCompile Include="parson.c" />
     <ClCompile Include="sd1306.c" />
+    <ClCompile Include="spi.c" />
     <UpToDateCheckInput Include="app_manifest.json" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ac_current_click.h" />
     <ClInclude Include="applibs_versions.h" />
+    <ClInclude Include="azure_iot_utilities.h" />
+    <ClInclude Include="connection_strings.h" />
+    <ClInclude Include="deviceTwin.h" />
     <ClInclude Include="epoll_timerfd_utilities.h" />
     <ClInclude Include="font.h" />
     <ClInclude Include="i2c.h" />
     <ClInclude Include="mt3620.h" />
     <ClInclude Include="oled.h" />
+    <ClInclude Include="parson.h" />
     <ClInclude Include="sd1306.h" />
+    <ClInclude Include="spi.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
@@ -62,7 +71,7 @@
       <AdditionalOptions>-Werror=implicit-function-declaration %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
-      <LibraryDependencies>applibs;pthread;gcc_s;c</LibraryDependencies>
+      <LibraryDependencies>applibs;pthread;gcc_s;c;azureiot</LibraryDependencies>
       <AdditionalOptions>-Wl,--no-undefined -nodefaultlibs %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
