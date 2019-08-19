@@ -1,5 +1,5 @@
 {
-  "name": "measure-bridge.home-bridge-plugin",
+  "name": "homebridge-azure-switch",
   "version": "0.0.0",
   "description": "MeasureBridge.HomeBridgePlugin",
   "main": "index.js",
@@ -12,5 +12,8 @@
   },
   "dependencies": {
     "azure-iothub": "^1.10.0"
-  }
+  },
+  "keywords": [
+    "homebridge-plugin"
+  ]
 }

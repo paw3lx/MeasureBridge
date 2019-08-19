@@ -15,6 +15,7 @@ function AzureSwitch(log, config) {
   self.name = config["name"];
   self.connectionString = config["connectionString"];
   self.targetDevice = config["targetDevice"];
+  self.deviceTwinName = config["deviceTwinName"];
   self.state = false;
 
   self.registry = Registry.fromConnectionString(self.connectionString);
@@ -42,8 +43,10 @@ AzureSwitch.prototype.getOn = function (callback) {
 AzureSwitch.prototype.setOn = function (on, callback) {
   this.state = on ? true : false;
   var self = this;
+  var desired = {};
+  desired[self.deviceTwinName] = self.state;
 
-  self.registry.updateTwin(self.targetDevice, { properties: { desired: { "clickBoardRelay1": self.state }}}, self.twinEtag, function(err, twin) {
+  self.registry.updateTwin(self.targetDevice, { properties: { desired: desired }}, self.twinEtag, function(err, twin) {
     if (err) {
       console.error(err.message);
     } else {
