@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MeasureBridge.AzureSphere",
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "MeasureBridge.HomeBridgePlugin", "MeasureBridge.HomeBridgePlugin\MeasureBridge.HomeBridgePlugin.njsproj", "{20C22E2E-3624-4B02-880E-2C1596836CE4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureBridge.IotHubFunctionApp", "MeasureBridge.IotHubFunctionApp\MeasureBridge.IotHubFunctionApp.csproj", "{FF4B840E-0B4A-4FC7-9FB6-9EC344CAE399}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,14 @@ Global
 		{20C22E2E-3624-4B02-880E-2C1596836CE4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{20C22E2E-3624-4B02-880E-2C1596836CE4}.Release|ARM.ActiveCfg = Release|Any CPU
 		{20C22E2E-3624-4B02-880E-2C1596836CE4}.Release|ARM.Build.0 = Release|Any CPU
+		{FF4B840E-0B4A-4FC7-9FB6-9EC344CAE399}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF4B840E-0B4A-4FC7-9FB6-9EC344CAE399}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF4B840E-0B4A-4FC7-9FB6-9EC344CAE399}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{FF4B840E-0B4A-4FC7-9FB6-9EC344CAE399}.Debug|ARM.Build.0 = Debug|Any CPU
+		{FF4B840E-0B4A-4FC7-9FB6-9EC344CAE399}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF4B840E-0B4A-4FC7-9FB6-9EC344CAE399}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF4B840E-0B4A-4FC7-9FB6-9EC344CAE399}.Release|ARM.ActiveCfg = Release|Any CPU
+		{FF4B840E-0B4A-4FC7-9FB6-9EC344CAE399}.Release|ARM.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
