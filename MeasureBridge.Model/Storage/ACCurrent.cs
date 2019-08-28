@@ -1,6 +1,7 @@
 ﻿using Microsoft.WindowsAzure.Storage.Table;
+using System;
 
-namespace MeasureBridge.IotHubFunctionApp
+namespace MeasureBridge.Model.Storage
 {
     public class ACCurrent : TableEntity
     {

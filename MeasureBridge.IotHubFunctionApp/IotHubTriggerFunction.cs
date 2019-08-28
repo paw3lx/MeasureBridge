@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using MeasureBridge.IotHubFunctionApp.InputModel;
+using MeasureBridge.Model.Storage;
 
 namespace MeasureBridge.IotHubFunctionApp
 {
