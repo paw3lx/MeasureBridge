@@ -16,7 +16,7 @@ namespace MeasureBridge.StorageService.Services
     {
         private readonly CloudTableClient _tableClient;
 
-        public ACCurrentService(IConfigurationRoot configuration)
+        public ACCurrentService(IConfiguration configuration)
         {
             var cloudStorageAccount = CloudStorageAccount.Parse(configuration.GetConnectionString("DefaultConnection"));
             _tableClient = cloudStorageAccount.CreateCloudTableClient();
