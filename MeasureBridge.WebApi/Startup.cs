@@ -2,6 +2,8 @@
 using MeasureBridge.Model.Storage;
 using MeasureBridge.StorageService.Interfaces;
 using MeasureBridge.StorageService.Services;
+using Measureridge.StorageService.Interfaces;
+using Measureridge.StorageService.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -36,7 +38,8 @@ namespace MeasureBridge.WebApi
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddSingleton<ITableService<ACCurrent>, ACCurrentService>();
+            services.AddTransient(typeof(ITableService<>), typeof(TableService<>));
+            services.AddTransient<IACService, ACService>();
 
             services.AddSingleton(Configuration);
         }

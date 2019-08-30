@@ -12,32 +12,32 @@ using System.Threading.Tasks;
 
 namespace MeasureBridge.StorageService.Services
 {
-    public class ACCurrentService : ITableService<ACCurrent>
+    public class TableService<T> : ITableService<T> where T : ITableEntity, new()
     {
         private readonly CloudTableClient _tableClient;
 
-        public ACCurrentService(IConfiguration configuration)
+        public TableService(IConfiguration configuration)
         {
             var cloudStorageAccount = CloudStorageAccount.Parse(configuration.GetConnectionString("DefaultConnection"));
             _tableClient = cloudStorageAccount.CreateCloudTableClient();
         }
 
-        public async Task<double> GetAverage(DateTime from, DateTime to)
+        public async Task<IEnumerable<T>> GetEntities(DateTime from, DateTime to)
         {
-            CloudTable table = _tableClient.GetTableReference("ACCurrent");
+            CloudTable table = _tableClient.GetTableReference(typeof(T).Name);
             var filter = TableQuery.CombineFilters(TableQuery.GenerateFilterConditionForDate("Timestamp", QueryComparisons.GreaterThanOrEqual, from),
                 TableOperators.And,
                 TableQuery.GenerateFilterConditionForDate("Timestamp", QueryComparisons.LessThanOrEqual, to));
-            TableQuery<ACCurrent> query = new TableQuery<ACCurrent>().Where(filter);
-            var segmentResult = await table.ExecuteQueryAsync(query);
+            TableQuery<T> query = new TableQuery<T>().Where(filter);
+            var result = await table.ExecuteQueryAsync(query);
 
-            return segmentResult.Select(s => s.AC).Average();
+            return result;
         }
 
-        public async Task<IEnumerable<ACCurrent>> GetEntities(int takeCount)
+        public async Task<IEnumerable<T>> GetEntities(int takeCount)
         {
-            CloudTable table = _tableClient.GetTableReference("ACCurrent");
-            TableQuery<ACCurrent> query = new TableQuery<ACCurrent>().Take(takeCount);
+            CloudTable table = _tableClient.GetTableReference(typeof(T).Name);
+            TableQuery<T> query = new TableQuery<T>().Take(takeCount);
 
             var segmentResult = await table.ExecuteQueryAsync(query);
 

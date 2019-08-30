@@ -9,6 +9,6 @@ namespace MeasureBridge.StorageService.Interfaces
     {
         Task<IEnumerable<T>> GetEntities(int takeCount);
 
-        Task<double> GetAverage(DateTime from, DateTime to);
+        Task<IEnumerable<T>> GetEntities(DateTime from, DateTime to);
     }
 }
