@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using MeasureBridge.Model.Report;
-using Measureridge.StorageService.Interfaces;
+using MeasureBridge.StorageService.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MeasureBridge.WebApi.Controllers

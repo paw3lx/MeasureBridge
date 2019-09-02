@@ -1,12 +1,12 @@
 ﻿using MeasureBridge.Model.Report;
 using MeasureBridge.Model.Storage;
 using MeasureBridge.StorageService.Interfaces;
-using Measureridge.StorageService.Interfaces;
+using MeasureBridge.StorageService.Interfaces;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Measureridge.StorageService.Services
+namespace MeasureBridge.StorageService.Services
 {
     public class ACService : IACService
     {

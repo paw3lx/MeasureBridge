@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Measureridge.StorageService.Interfaces
+namespace MeasureBridge.StorageService.Interfaces
 {
     public interface IACService
     {

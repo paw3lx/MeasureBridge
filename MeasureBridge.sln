@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Azure", "Azure", "{5AAB2E20
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureBridge.Model", "MeasureBridge.Model\MeasureBridge.Model.csproj", "{DFBE250A-9007-4E18-AFB8-D3065721A825}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Measureridge.StorageService", "Measureridge.StorageService\Measureridge.StorageService.csproj", "{404AF652-214A-4B7E-A7EE-C575B0FE6AB0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasureBridge.StorageService", "MeasureBridge.StorageService\MeasureBridge.StorageService.csproj", "{404AF652-214A-4B7E-A7EE-C575B0FE6AB0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
