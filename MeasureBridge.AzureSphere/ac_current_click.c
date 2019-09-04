@@ -7,10 +7,12 @@
 extern int spiFd;
 void HAL_Delay(int delayTime);
 
+static float factor = 2.0;
+
 int ReadACCurrentBytes(uint8_t* byte_1, uint8_t* byte_2)
 {
 	static const uint8_t sampleCmd = 0x00;
-	static const size_t transferCount = 3;
+	static const size_t transferCount = 2;
 	SPIMaster_Transfer transfers[transferCount];
 
 	int result = SPIMaster_InitTransfers(transfers, transferCount);
@@ -20,17 +22,17 @@ int ReadACCurrentBytes(uint8_t* byte_1, uint8_t* byte_2)
 
 	uint8_t byte1, byte2;
 
-	transfers[0].flags = SPI_TransferFlags_Write;
-	transfers[0].writeData = &sampleCmd;
-	transfers[0].length = sizeof(sampleCmd);
+	//transfers[0].flags = SPI_TransferFlags_Write;
+	//transfers[0].writeData = &sampleCmd;
+	//transfers[0].length = sizeof(sampleCmd);
+
+	transfers[0].flags = SPI_TransferFlags_Read;
+	transfers[0].readData = &byte1;
+	transfers[0].length = sizeof(byte1);
 
 	transfers[1].flags = SPI_TransferFlags_Read;
-	transfers[1].readData = &byte1;
-	transfers[1].length = sizeof(byte1);
-
-	transfers[2].flags = SPI_TransferFlags_Read;
-	transfers[2].readData = &byte2;
-	transfers[2].length = sizeof(byte2);
+	transfers[1].readData = &byte2;
+	transfers[1].length = sizeof(byte2);
 
 	ssize_t transferredBytes = SPIMaster_TransferSequential(spiFd, transfers, transferCount);
 
@@ -45,6 +47,8 @@ float GetCurrentADC(void)
 	uint8_t byte_1 = 0, byte_2 = 0;
 	
 	ReadACCurrentBytes(&byte_1, &byte_2);
+
+	Log_Debug("byte1 = %d, byte2 = %d \n", byte_1, byte_2);
 
 	uint16_t msb_1 = byte_2;
 	msb_1 = msb_1 >> 1; // shift right 1 bit to remove B01
@@ -62,6 +66,7 @@ float GetCurrentAC(uint8_t measurements)
 	float average = 0.0;
 	for (uint8_t i = 0; i < measurements; i++) {
 		float adc = GetCurrentADC();
+		Log_Debug("adc = %f \n", adc);
 		average += adc;
 		HAL_Delay(100);
 	}
@@ -69,6 +74,10 @@ float GetCurrentAC(uint8_t measurements)
 	average = (float) average / measurements;
 
 	float ac = (float)(average / 4095.0) * 2.048;
+
+	ac = (float)ac / 3.5 * 30.0;
+	
+	ac = ac * factor;
 
 	return ac;
 }
