@@ -8,7 +8,7 @@
     "AllowedConnections": [ "MeasureBridge.azure-devices.net" ],
     "SpiMaster": [ "ISU1" ],
     "I2cMaster": [ "ISU2" ],
-    "Gpio": [ 1, 43 ],
+    "Gpio": [ 1, 13, 43 ],
     "WifiConfig": true
   },
   "ApplicationType":"Default"

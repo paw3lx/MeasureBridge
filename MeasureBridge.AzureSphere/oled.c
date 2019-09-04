@@ -1,6 +1,8 @@
 #include "oled.h"
 #include <math.h>
 
+uint8_t oled_state = 0;
+
 float ac_current;
 
 /**
@@ -13,20 +15,52 @@ uint8_t oled_init()
 	return sd1306_init();
 }
 
-void UpdateACCurrent(void)
+void update_oled()
+{
+	switch (oled_state)
+	{
+		case 0:
+			UpdateConsumption();
+			break;
+		default:
+			UpdateProjections();
+			break;
+	}
+}
+
+void UpdateConsumption(void)
 {
 	clear_oled_buffer();
-	sd1306_draw_string(OLED_TITLE_X, OLED_TITLE_Y, " AC Current", FONT_SIZE_TITLE, white_pixel);
+	sd1306_draw_string(OLED_TITLE_X, OLED_TITLE_Y, "Consumption", FONT_SIZE_TITLE, white_pixel);
 
-	uint8_t string_data[10];
-	uint8_t str_label[] = "Now:";
+	uint8_t ac_string_data[10];
+	uint8_t str_label[] = "Current [A]: ";
 	// Convert x value to string
-	ftoa(ac_current, string_data, 6);
+	ftoa(ac_current, ac_string_data, 4);
 
 	// Draw a label at line 1
 	sd1306_draw_string(OLED_LINE_1_X, OLED_LINE_1_Y, str_label, FONT_SIZE_LINE, white_pixel);
 	// Draw the value of x
-	sd1306_draw_string(sizeof(str_label) * 6, OLED_LINE_1_Y, string_data, FONT_SIZE_LINE, white_pixel);
+	sd1306_draw_string(sizeof(str_label) * 6, OLED_LINE_1_Y, ac_string_data, FONT_SIZE_LINE, white_pixel);
+
+	uint8_t watts_string_data[10];
+	uint8_t str_label2[] = "Power [W]: ";
+	// Convert x value to string
+	float wats = ac_current * 230.0;
+	ftoa(wats, watts_string_data, 1);
+
+	// Draw a label at line 1
+	sd1306_draw_string(OLED_LINE_2_X, OLED_LINE_2_Y, str_label2, FONT_SIZE_LINE, white_pixel);
+	// Draw the value of x
+	sd1306_draw_string(sizeof(str_label2) * 6, OLED_LINE_2_Y, watts_string_data, FONT_SIZE_LINE, white_pixel);
+
+	sd1306_refresh();
+}
+
+void UpdateProjections(void)
+{
+	clear_oled_buffer();
+	sd1306_draw_string(OLED_TITLE_X, OLED_TITLE_Y, "Estimate", FONT_SIZE_TITLE, white_pixel);
 
 	sd1306_refresh();
 }

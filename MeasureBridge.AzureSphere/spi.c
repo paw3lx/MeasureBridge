@@ -3,12 +3,14 @@
 #include <string.h>
 #include <time.h>
 #include <signal.h>
+#include <stdio.h>
 
 #include "applibs_versions.h"
 #include "epoll_timerfd_utilities.h"
 #include "spi.h"
 #include "mt3620.h"
 #include "ac_current_click.h"
+#include "azure_iot_utilities.h"
 
 #include <applibs/log.h>
 #include <applibs/spi.h>
@@ -29,7 +31,14 @@ void AcCurrentEventHandler(EventData* eventData)
 	float ac = GetCurrentAC(3);
 	ac_current = ac;
 	Log_Debug("Current AC = %f \n", ac);
-	UpdateACCurrent();
+	update_oled();
+	// send to iot hub
+	char* pjsonBuffer = (char*)malloc(204);
+	snprintf(pjsonBuffer, 204, "{\"%s\":\"%f\"}", "ACCurrent", ac);
+
+
+	Log_Debug("\n[Info] Sending ac %s\n", pjsonBuffer);
+	AzureIoT_SendMessage(pjsonBuffer);
 }
 
 int InitSpi(void)
@@ -60,7 +69,7 @@ int InitSpi(void)
 		return -1;
 	}
 
-	struct timespec readDataeriod = { .tv_sec = 3.0,.tv_nsec = 0 };
+	struct timespec readDataeriod = { .tv_sec = 5.0,.tv_nsec = 0 };
 	// event handler data structures. Only the event handler field needs to be populated.
 	static EventData accelEventData = { .eventHandler = &AcCurrentEventHandler };
 	acCurrentFd = CreateTimerFdAndAddToEpoll(epollFd, &readDataeriod, &accelEventData, EPOLLIN);

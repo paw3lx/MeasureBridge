@@ -38,6 +38,11 @@ bool versionStringSent = false;
 int clickSocket1Relay1Fd = -1;
 int clickSocket1Relay2Fd = -1;
 
+static int buttonPollTimerFd = -1;
+static int buttonBGpioFd = -1;
+
+static GPIO_Value_Type buttonBState = GPIO_Value_High;
+
 int main(void)
 {
 	Log_Debug("MeasureBridge application starting.\n");
@@ -64,11 +69,69 @@ int main(void)
 		else {
 			AzureIoT_DoPeriodicTasks();
 		}
+		update_oled();
 	}
 
 	ClosePeripheralsAndHandlers();
 	Log_Debug("Application exiting.\n");
 }
+
+/// <summary>
+///     Handle button timer event: if the button is pressed, report the event to the IoT Hub.
+/// </summary>
+static void ButtonTimerEventHandler(EventData* eventData)
+{
+
+	bool sendTelemetryButtonA = false;
+	bool sendTelemetryButtonB = false;
+
+	if (ConsumeTimerFdEvent(buttonPollTimerFd) != 0) {
+		terminationRequired = true;
+		return;
+	}
+
+
+	// Check for button B press
+	GPIO_Value_Type newButtonBState;
+	int result = GPIO_GetValue(buttonBGpioFd, &newButtonBState);
+	if (result != 0) {
+		Log_Debug("ERROR: Could not read button GPIO: %s (%d).\n", strerror(errno), errno);
+		terminationRequired = true;
+		return;
+	}
+
+	// If the B button has just been pressed/released, send a telemetry message
+	// The button has GPIO_Value_Low when pressed and GPIO_Value_High when released
+	if (newButtonBState != buttonBState) {
+		if (newButtonBState == GPIO_Value_Low) {
+			// Send Telemetry here
+			Log_Debug("Button B pressed!\n");
+			sendTelemetryButtonB = true;
+
+			//// OLED
+
+			oled_state++;
+
+			if (oled_state > 1)
+			{
+				oled_state = 0;
+			}
+		}
+		else {
+			Log_Debug("Button B released!\n");
+
+		}
+
+		// Update the static variable to use next time we enter this routine
+		buttonBState = newButtonBState;
+
+
+	}
+
+}
+
+// event handler data structures. Only the event handler field needs to be populated.
+static EventData buttonEventData = { .eventHandler = &ButtonTimerEventHandler };
 
 /// <summary>
 ///     Set up SIGTERM termination handler, initialize peripherals, and set up event handlers.
@@ -110,6 +173,23 @@ static int InitPeripheralsAndHandlers(void)
 				return -1;
 			}
 		}
+	}
+
+	// Open button B GPIO as input
+	Log_Debug("Opening Starter Kit Button B as input.\n");
+	buttonBGpioFd = GPIO_OpenAsInput(MT3620_GPIO13);
+	if (buttonBGpioFd < 0) {
+		Log_Debug("ERROR: Could not open button B GPIO: %s (%d).\n", strerror(errno), errno);
+		return -1;
+	}
+
+	// Set up a timer to poll the buttons
+
+	struct timespec buttonPressCheckPeriod = { 0, 1000000 };
+	buttonPollTimerFd =
+		CreateTimerFdAndAddToEpoll(epollFd, &buttonPressCheckPeriod, &buttonEventData, EPOLLIN);
+	if (buttonPollTimerFd < 0) {
+		return -1;
 	}
 
 	AzureIoT_SetDeviceTwinUpdateCallback(&deviceTwinChangedHandler);
