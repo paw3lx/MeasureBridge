@@ -69,7 +69,6 @@ int main(void)
 		else {
 			AzureIoT_DoPeriodicTasks();
 		}
-		update_oled();
 	}
 
 	ClosePeripheralsAndHandlers();

@@ -9,11 +9,14 @@
 #define OLED_LINE_1_Y     16
 #define OLED_LINE_2_X     0
 #define OLED_LINE_2_Y     26
+#define OLED_LINE_3_X     0
+#define OLED_LINE_3_Y     36
 
 #define FONT_SIZE_TITLE   2
 #define FONT_SIZE_LINE    1
 
-extern float ac_current;
+extern float ac_current; 
+extern float ac_averageLastHour;
 
 extern uint8_t oled_state;
 

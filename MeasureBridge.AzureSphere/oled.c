@@ -4,6 +4,7 @@
 uint8_t oled_state = 0;
 
 float ac_current;
+float ac_averageLastHour;
 
 /**
   * @brief  OLED initialization.
@@ -53,6 +54,16 @@ void UpdateConsumption(void)
 	sd1306_draw_string(OLED_LINE_2_X, OLED_LINE_2_Y, str_label2, FONT_SIZE_LINE, white_pixel);
 	// Draw the value of x
 	sd1306_draw_string(sizeof(str_label2) * 6, OLED_LINE_2_Y, watts_string_data, FONT_SIZE_LINE, white_pixel);
+
+	uint8_t str_label3[] = "Last h [A]: ";
+	uint8_t ac_last_hour_string_data[10];
+	// Convert x value to string
+	ftoa(ac_averageLastHour, ac_last_hour_string_data, 2);
+
+	// Draw a label at line 1
+	sd1306_draw_string(OLED_LINE_3_X, OLED_LINE_3_Y, str_label3, FONT_SIZE_LINE, white_pixel);
+	// Draw the value of x
+	sd1306_draw_string(sizeof(str_label3) * 6, OLED_LINE_3_Y, ac_last_hour_string_data, FONT_SIZE_LINE, white_pixel);
 
 	sd1306_refresh();
 }

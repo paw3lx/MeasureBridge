@@ -39,6 +39,8 @@ static const char cstrDeviceTwinJsonString[] = "{\"%s\": \"%s\"}";
 
 static int desiredVersion = 0;
 
+float ac_averageLastHour = 0.0;
+
 // Define each device twin key that we plan to catch, process, and send reported property for.
 // .twinKey - The JSON Key piece of the key: value pair
 // .twinVar - The address of the application variable keep this key: value pair data
@@ -48,7 +50,8 @@ static int desiredVersion = 0;
 // .active_high - true if GPIO item is active high, false if active low.  This is used to init the GPIO 
 twin_t twinArray[] = {
 	{.twinKey = "clickBoardRelay1",.twinVar = &clkBoardRelay1IsOn,.twinFd = &clickSocket1Relay1Fd,.twinGPIO = MT3620_GPIO1,.twinType = TYPE_BOOL,.active_high = true},
-	{.twinKey = "clickBoardRelay2",.twinVar = &clkBoardRelay2IsOn,.twinFd = &clickSocket1Relay2Fd,.twinGPIO = MT3620_GPIO43,.twinType = TYPE_BOOL,.active_high = true}
+	{.twinKey = "clickBoardRelay2",.twinVar = &clkBoardRelay2IsOn,.twinFd = &clickSocket1Relay2Fd,.twinGPIO = MT3620_GPIO43,.twinType = TYPE_BOOL,.active_high = true},
+	{.twinKey = "acAverageLastHour",.twinVar = &ac_averageLastHour,.twinFd = NULL,.twinGPIO = NO_GPIO_ASSOCIATED_WITH_TWIN,.twinType = TYPE_FLOAT,.active_high = true},
 };
 
 // Calculate how many twin_t items are in the array.  We use this to iterate through the structure.
