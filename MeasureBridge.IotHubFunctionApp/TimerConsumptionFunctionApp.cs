@@ -12,23 +12,24 @@ namespace MeasureBridge.IotHubFunctionApp
     public static class TimerConsumptionFunctionApp
     {
         [FunctionName("TimerConsumptionFunctionApp")]
-        public static async void Run([TimerTrigger("0 */10 * * * *")]TimerInfo myTimer, [Table("ACCurrent")]CloudTable acCurrentTable, [Table("Consumption")]ICollector<Consumption> consumptionCollector,
-            ILogger log, ExecutionContext context)
+        [return: Table("Consumption", Connection = "AzureWebJobsStorage")]
+        public static async Task<Consumption> Run([TimerTrigger("0 */10 * * * *")]TimerInfo myTimer,
+            [Table("ACCurrent")]CloudTable acCurrentTable,
+            ILogger log)
         {
             log.LogInformation($"C# TimerConsumptionFunctionApp executed at: {DateTime.Now}");
             
             var currentKwh = await CalculatekWh(acCurrentTable);
 
+            log.LogInformation($"Saved {currentKwh} to consumption collector");
             var entity = new Consumption()
             {
                 kWh = currentKwh,
-                PartitionKey = System.Guid.NewGuid().ToString(),
+                PartitionKey = Guid.NewGuid().ToString(),
                 RowKey = currentKwh.ToString()
             };
 
-            consumptionCollector.Add(entity);
-
-            log.LogInformation($"Saved {currentKwh} to consumption collector");
+            return entity;
         }
 
         private async static Task<double> CalculatekWh(CloudTable acCurrentTable)
