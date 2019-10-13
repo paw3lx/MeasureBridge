@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MeasureBridge.IotHubFunctionApp.InputModel
+﻿namespace MeasureBridge.IotHubFunctionApp.InputModel
 {
     public class Message
     {

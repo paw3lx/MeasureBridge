@@ -8,7 +8,7 @@ namespace MeasureBridge.StorageService.Extensions
 {
     public static class TableQueryExtensions
     {
-        public static async Task<IList<T>> ExecuteQueryAsync<T>(this CloudTable table, TableQuery<T> query, CancellationToken ct = default(CancellationToken), Action<IList<T>> onProgress = null) where T : ITableEntity, new()
+        public static async Task<IList<T>> ExecuteQueryAsync<T>(this CloudTable table, TableQuery<T> query, CancellationToken ct = default, Action<IList<T>> onProgress = null) where T : ITableEntity, new()
         {
 
             var items = new List<T>();
@@ -20,7 +20,7 @@ namespace MeasureBridge.StorageService.Extensions
                 TableQuerySegment<T> seg = await table.ExecuteQuerySegmentedAsync<T>(query, token);
                 token = seg.ContinuationToken;
                 items.AddRange(seg);
-                if (onProgress != null) onProgress(items);
+                onProgress?.Invoke(items);
 
             } while (token != null && !ct.IsCancellationRequested);
 
