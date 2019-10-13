@@ -40,6 +40,9 @@ static const char cstrDeviceTwinJsonString[] = "{\"%s\": \"%s\"}";
 static int desiredVersion = 0;
 
 float ac_averageLastHour = 0.0;
+float kWhToday = 0.0;
+float kWhLast7Days = 0.0;
+float kWhLastMonth = 0.0;
 
 // Define each device twin key that we plan to catch, process, and send reported property for.
 // .twinKey - The JSON Key piece of the key: value pair
@@ -52,6 +55,9 @@ twin_t twinArray[] = {
 	{.twinKey = "clickBoardRelay1",.twinVar = &clkBoardRelay1IsOn,.twinFd = &clickSocket1Relay1Fd,.twinGPIO = MT3620_GPIO1,.twinType = TYPE_BOOL,.active_high = true},
 	{.twinKey = "clickBoardRelay2",.twinVar = &clkBoardRelay2IsOn,.twinFd = &clickSocket1Relay2Fd,.twinGPIO = MT3620_GPIO43,.twinType = TYPE_BOOL,.active_high = true},
 	{.twinKey = "acAverageLastHour",.twinVar = &ac_averageLastHour,.twinFd = NULL,.twinGPIO = NO_GPIO_ASSOCIATED_WITH_TWIN,.twinType = TYPE_FLOAT,.active_high = true},
+	{.twinKey = "kWhToday",.twinVar = &kWhToday,.twinFd = NULL,.twinGPIO = NO_GPIO_ASSOCIATED_WITH_TWIN,.twinType = TYPE_FLOAT,.active_high = true},
+	{.twinKey = "kWhLast7Days",.twinVar = &kWhLast7Days,.twinFd = NULL,.twinGPIO = NO_GPIO_ASSOCIATED_WITH_TWIN,.twinType = TYPE_FLOAT,.active_high = true},
+	{.twinKey = "kWhLastMonth",.twinVar = &kWhLastMonth,.twinFd = NULL,.twinGPIO = NO_GPIO_ASSOCIATED_WITH_TWIN,.twinType = TYPE_FLOAT,.active_high = true}
 };
 
 // Calculate how many twin_t items are in the array.  We use this to iterate through the structure.

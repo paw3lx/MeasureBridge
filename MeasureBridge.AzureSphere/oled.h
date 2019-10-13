@@ -17,6 +17,9 @@
 
 extern float ac_current; 
 extern float ac_averageLastHour;
+extern float kWhToday;
+extern float kWhLast7Days;
+extern float kWhLastMonth;
 
 extern uint8_t oled_state;
 

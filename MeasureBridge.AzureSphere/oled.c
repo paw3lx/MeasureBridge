@@ -5,6 +5,9 @@ uint8_t oled_state = 0;
 
 float ac_current;
 float ac_averageLastHour;
+float kWhToday;
+float kWhLast7Days;
+float kWhLastMonth;
 
 /**
   * @brief  OLED initialization.
@@ -32,7 +35,7 @@ void update_oled()
 void UpdateConsumption(void)
 {
 	clear_oled_buffer();
-	sd1306_draw_string(OLED_TITLE_X, OLED_TITLE_Y, "Consumption", FONT_SIZE_TITLE, white_pixel);
+	sd1306_draw_string(OLED_TITLE_X, OLED_TITLE_Y, " Current", FONT_SIZE_TITLE, white_pixel);
 
 	uint8_t ac_string_data[10];
 	uint8_t str_label[] = "Current [A]: ";
@@ -71,7 +74,37 @@ void UpdateConsumption(void)
 void UpdateProjections(void)
 {
 	clear_oled_buffer();
-	sd1306_draw_string(OLED_TITLE_X, OLED_TITLE_Y, "Estimate", FONT_SIZE_TITLE, white_pixel);
+	sd1306_draw_string(OLED_TITLE_X, OLED_TITLE_Y, "Consumption", FONT_SIZE_TITLE, white_pixel);
+
+	uint8_t kwh_today_string_data[10];
+	uint8_t str_label[] = "Today [kWh]: ";
+	// Convert x value to string
+	ftoa(kWhToday, kwh_today_string_data, 4);
+
+	// Draw a label at line 1
+	sd1306_draw_string(OLED_LINE_1_X, OLED_LINE_1_Y, str_label, FONT_SIZE_LINE, white_pixel);
+	// Draw the value of x
+	sd1306_draw_string(sizeof(str_label) * 6, OLED_LINE_1_Y, kwh_today_string_data, FONT_SIZE_LINE, white_pixel);
+
+	uint8_t kwh_7days_string_data[10];
+	uint8_t str_label2[] = "7 days [kWh]: ";
+	// Convert x value to string
+	ftoa(kWhLast7Days, kwh_7days_string_data, 4);
+
+	// Draw a label at line 1
+	sd1306_draw_string(OLED_LINE_2_X, OLED_LINE_2_Y, str_label2, FONT_SIZE_LINE, white_pixel);
+	// Draw the value of x
+	sd1306_draw_string(sizeof(str_label2) * 6, OLED_LINE_2_Y, kwh_7days_string_data, FONT_SIZE_LINE, white_pixel);
+
+	uint8_t str_label3[] = "Month [kWh]: ";
+	uint8_t kwh_last_month_string_data[10];
+	// Convert x value to string
+	ftoa(kWhLastMonth, kwh_last_month_string_data, 4);
+
+	// Draw a label at line 1
+	sd1306_draw_string(OLED_LINE_3_X, OLED_LINE_3_Y, str_label3, FONT_SIZE_LINE, white_pixel);
+	// Draw the value of x
+	sd1306_draw_string(sizeof(str_label3) * 6, OLED_LINE_3_Y, kwh_last_month_string_data, FONT_SIZE_LINE, white_pixel);
 
 	sd1306_refresh();
 }
