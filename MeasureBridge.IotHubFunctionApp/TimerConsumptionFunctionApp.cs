@@ -21,6 +21,12 @@ namespace MeasureBridge.IotHubFunctionApp
             
             var currentKwh = await CalculatekWh(acCurrentTable);
 
+            if (currentKwh == 0)
+            {
+                log.LogInformation($"Calculated kWh is 0");
+                return null;
+            }
+
             log.LogInformation($"Saved {currentKwh} to consumption collector");
             var entity = new Consumption()
             {
@@ -48,7 +54,7 @@ namespace MeasureBridge.IotHubFunctionApp
 
             double kpower = (averageAC * 230) / 1000;
             
-            double kWh = kpower * (minutes / 60);
+            double kWh = kpower * ((double)minutes / 60);
 
             return kWh;
         }
