@@ -96,6 +96,9 @@ int ConsumeTimerFdEvent(int timerFd);
 int CreateTimerFdAndAddToEpoll(int epollFd, const struct timespec* period,
 	EventData* persistentEventData, const uint32_t epollEventMask);
 
+int CreateSingleTimerFdAndAddToEpoll(int epollFd, const struct timespec* period,
+	EventData* persistentEventData, const uint32_t epollEventMask);
+
 /// <summary>
 ///     Waits for an event on an epoll instance and triggers the handler.
 /// </summary>

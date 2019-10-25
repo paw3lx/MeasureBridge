@@ -27,8 +27,11 @@ extern uint8_t oled_init(void);
 
 extern void update_oled(void);
 
+void UpdateOledState(void);
+
 void UpdateConsumption(void);
 void UpdateProjections(void);
+void ShowClickState(void);
 /**
   * @brief  Converts a given integer x to string uint8_t[]
   * @param  n: float number to convert

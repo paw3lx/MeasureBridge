@@ -23,12 +23,14 @@
 #include "deviceTwin.h"
 #include "azure_iot_utilities.h"
 #include "parson.h"
+#include "i2c.h"
 
-bool clkBoardRelay1IsOn = true;
-bool clkBoardRelay2IsOn = true;
+extern bool clkBoardRelay1IsOn;
+extern bool clkBoardRelay2IsOn;
 
 extern int clickSocket1Relay1Fd;
 extern int clickSocket1Relay2Fd;
+extern int epollFd;
 
 extern volatile sig_atomic_t terminationRequired;
 
@@ -43,6 +45,8 @@ float ac_averageLastHour = 0.0;
 float kWhToday = 0.0;
 float kWhLast7Days = 0.0;
 float kWhLastMonth = 0.0;
+
+int singleTimerFd = -1;
 
 // Define each device twin key that we plan to catch, process, and send reported property for.
 // .twinKey - The JSON Key piece of the key: value pair
@@ -102,6 +106,25 @@ void checkAndUpdateDeviceTwin(char* property, void* value, data_type_t type, boo
 	}
 }
 
+/// <summary>
+///     Handle button timer event: if the button is pressed, report the event to the IoT Hub.
+/// </summary>
+static void ClickBoardChangePeriodEventHandler(EventData* eventData)
+{
+	if (ConsumeTimerFdEvent(singleTimerFd) != 0) {
+		terminationRequired = true;
+		return;
+	}
+
+	oled_state = 0;
+	singleTimerFd = -1;
+	close(singleTimerFd);
+
+}
+
+// event handler data structures. Only the event handler field needs to be populated.
+static EventData clickBoardChangEventData = { .eventHandler = &ClickBoardChangePeriodEventHandler };
+
 ///<summary>
 ///		Parses received desired property changes.
 ///</summary>
@@ -122,7 +145,16 @@ void deviceTwinChangedHandler(JSON_Object* desiredProperties)
 
 		if (json_object_has_value(desiredProperties, twinArray[i].twinKey) != 0)
 		{
-
+			if (twinArray[i].twinKey == "clickBoardRelay1" && singleTimerFd == -1)
+			{
+				oled_state = 2;
+				struct timespec clickBoardChangePeriod = { 10, 0 };
+				singleTimerFd =
+					CreateSingleTimerFdAndAddToEpoll(epollFd, &clickBoardChangePeriod, &clickBoardChangEventData, EPOLLIN);
+				if (singleTimerFd < 0) {
+					return -1;
+				}
+			}
 			switch (twinArray[i].twinType) {
 			case TYPE_BOOL:
 				*(bool*)twinArray[i].twinVar = (bool)json_object_get_boolean(desiredProperties, twinArray[i].twinKey);

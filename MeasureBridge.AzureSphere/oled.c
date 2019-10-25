@@ -8,6 +8,7 @@ float ac_averageLastHour;
 float kWhToday;
 float kWhLast7Days;
 float kWhLastMonth;
+bool clkBoardRelay1IsOn;
 
 /**
   * @brief  OLED initialization.
@@ -26,16 +27,30 @@ void update_oled()
 		case 0:
 			UpdateConsumption();
 			break;
-		default:
+		case 1:
 			UpdateProjections();
 			break;
+		case 2:
+			ShowClickState();
+			break;
 	}
+	
+}
+
+void UpdateOledState(void)
+{
+	if (oled_state < 2)
+	{
+		oled_state += 1;
+		oled_state = oled_state % 2;
+	}
+	update_oled();
 }
 
 void UpdateConsumption(void)
 {
 	clear_oled_buffer();
-	sd1306_draw_string(OLED_TITLE_X, OLED_TITLE_Y, " Current", FONT_SIZE_TITLE, white_pixel);
+	sd1306_draw_string(OLED_TITLE_X, OLED_TITLE_Y, "  Current", FONT_SIZE_TITLE, white_pixel);
 
 	uint8_t ac_string_data[10];
 	uint8_t str_label[] = "Current [A]: ";
@@ -48,7 +63,7 @@ void UpdateConsumption(void)
 	sd1306_draw_string(sizeof(str_label) * 6, OLED_LINE_1_Y, ac_string_data, FONT_SIZE_LINE, white_pixel);
 
 	uint8_t watts_string_data[10];
-	uint8_t str_label2[] = "Power [W]: ";
+	uint8_t str_label2[] = "Power   [W]: ";
 	// Convert x value to string
 	float wats = ac_current * 230.0;
 	ftoa(wats, watts_string_data, 1);
@@ -58,7 +73,7 @@ void UpdateConsumption(void)
 	// Draw the value of x
 	sd1306_draw_string(sizeof(str_label2) * 6, OLED_LINE_2_Y, watts_string_data, FONT_SIZE_LINE, white_pixel);
 
-	uint8_t str_label3[] = "Last h [A]: ";
+	uint8_t str_label3[] = "Last h  [A]: ";
 	uint8_t ac_last_hour_string_data[10];
 	// Convert x value to string
 	ftoa(ac_averageLastHour, ac_last_hour_string_data, 2);
@@ -77,7 +92,7 @@ void UpdateProjections(void)
 	sd1306_draw_string(OLED_TITLE_X, OLED_TITLE_Y, "Consumption", FONT_SIZE_TITLE, white_pixel);
 
 	uint8_t kwh_today_string_data[10];
-	uint8_t str_label[] = "Today [kWh]: ";
+	uint8_t str_label[] = "Today  [kWh]: ";
 	// Convert x value to string
 	ftoa(kWhToday, kwh_today_string_data, 4);
 
@@ -96,7 +111,7 @@ void UpdateProjections(void)
 	// Draw the value of x
 	sd1306_draw_string(sizeof(str_label2) * 6, OLED_LINE_2_Y, kwh_7days_string_data, FONT_SIZE_LINE, white_pixel);
 
-	uint8_t str_label3[] = "Month [kWh]: ";
+	uint8_t str_label3[] = "Month  [kWh]: ";
 	uint8_t kwh_last_month_string_data[10];
 	// Convert x value to string
 	ftoa(kWhLastMonth, kwh_last_month_string_data, 4);
@@ -106,6 +121,19 @@ void UpdateProjections(void)
 	// Draw the value of x
 	sd1306_draw_string(sizeof(str_label3) * 6, OLED_LINE_3_Y, kwh_last_month_string_data, FONT_SIZE_LINE, white_pixel);
 
+	sd1306_refresh();
+}
+
+void ShowClickState(void)
+{
+	clear_oled_buffer();
+	sd1306_draw_string(OLED_TITLE_X, 16, " R E L A Y", FONT_SIZE_TITLE, white_pixel);
+	if (clkBoardRelay1IsOn == true) {
+		sd1306_draw_string(OLED_TITLE_X, 40, "    O N", FONT_SIZE_TITLE, white_pixel);
+	}
+	else {
+		sd1306_draw_string(OLED_TITLE_X, 40, "   O F F", FONT_SIZE_TITLE, white_pixel);
+	}
 	sd1306_refresh();
 }
 

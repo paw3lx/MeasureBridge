@@ -119,6 +119,31 @@ int CreateTimerFdAndAddToEpoll(int epollFd, const struct timespec* period,
 	return timerFd;
 }
 
+int CreateSingleTimerFdAndAddToEpoll(int epollFd, const struct timespec* period,
+	EventData* persistentEventData, const uint32_t epollEventMask)
+{
+	// Create the timerfd and arm it by setting the interval to period
+	int timerFd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK);
+	if (timerFd < 0) {
+		Log_Debug("ERROR: Could not create timerfd: %s (%d).\n", strerror(errno), errno);
+		return -1;
+	}
+	if (SetTimerFdToSingleExpiry(timerFd, period) != 0) {
+		int result = close(timerFd);
+		if (result != 0) {
+			Log_Debug("ERROR: Could not close timerfd: %s (%d).\n", strerror(errno), errno);
+		}
+		return -1;
+	}
+
+	persistentEventData->fd = timerFd;
+	if (RegisterEventHandlerToEpoll(epollFd, timerFd, persistentEventData, epollEventMask) != 0) {
+		return -1;
+	}
+
+	return timerFd;
+}
+
 int WaitForEventAndCallHandler(int epollFd)
 {
 	struct epoll_event event;

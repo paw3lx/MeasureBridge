@@ -38,6 +38,9 @@ bool versionStringSent = false;
 int clickSocket1Relay1Fd = -1;
 int clickSocket1Relay2Fd = -1;
 
+bool clkBoardRelay1IsOn = true;
+bool clkBoardRelay2IsOn = true;
+
 static int buttonPollTimerFd = -1;
 static int buttonBGpioFd = -1;
 
@@ -176,7 +179,7 @@ static int InitPeripheralsAndHandlers(void)
 
 	// Open button B GPIO as input
 	Log_Debug("Opening Starter Kit Button B as input.\n");
-	buttonBGpioFd = GPIO_OpenAsInput(MT3620_GPIO13);
+	buttonBGpioFd = GPIO_OpenAsInput(MT3620_GPIO13); //MT3620_GPIO13 MT3620_GPIO2
 	if (buttonBGpioFd < 0) {
 		Log_Debug("ERROR: Could not open button B GPIO: %s (%d).\n", strerror(errno), errno);
 		return -1;

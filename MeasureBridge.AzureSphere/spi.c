@@ -31,7 +31,7 @@ void AcCurrentEventHandler(EventData* eventData)
 	float ac = GetCurrentAC(3);
 	ac_current = ac;
 	Log_Debug("Current AC = %f \n", ac);
-	update_oled();
+	UpdateOledState();
 	// send to iot hub
 	char* pjsonBuffer = (char*)malloc(204);
 	snprintf(pjsonBuffer, 204, "{\"%s\":\"%f\"}", "ACCurrent", ac);
