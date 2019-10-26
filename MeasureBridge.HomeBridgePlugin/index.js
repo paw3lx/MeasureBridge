@@ -20,15 +20,6 @@ function AzureSwitch(log, config) {
 
     self.registry = Registry.fromConnectionString(self.connectionString);
 
-    self.registry.getTwin(self.targetDevice, function (err, twin) {
-        if (err) {
-            console.error(err.message);
-        } else {
-            console.log(JSON.stringify(twin, null, 2));
-            self.twinEtag = twin.etag;
-        }
-    });
-
     this.service = new Service.Switch(this.name);
     this.service
         .getCharacteristic(Characteristic.On)
@@ -46,12 +37,21 @@ AzureSwitch.prototype.setOn = function (on, callback) {
     var desired = {};
     desired[self.deviceTwinName] = self.state;
 
-    self.registry.updateTwin(self.targetDevice, { properties: { desired: desired } }, self.twinEtag, function (err, twin) {
+    self.registry.getTwin(self.targetDevice, function (err, twin) {
         if (err) {
             console.error(err.message);
         } else {
             console.log(JSON.stringify(twin, null, 2));
             self.twinEtag = twin.etag;
+
+            self.registry.updateTwin(self.targetDevice, { properties: { desired: desired } }, self.twinEtag, function (err, twin) {
+                if (err) {
+                    console.error(err.message);
+                } else {
+                    console.log(JSON.stringify(twin, null, 2));
+                    self.twinEtag = twin.etag;
+                }
+            });
         }
     });
 
