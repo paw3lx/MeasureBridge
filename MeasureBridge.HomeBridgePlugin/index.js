@@ -51,6 +51,7 @@ AzureSwitch.prototype.setOn = function (on, callback) {
             console.error(err.message);
         } else {
             console.log(JSON.stringify(twin, null, 2));
+            self.twinEtag = twin.etag;
         }
     });
 
