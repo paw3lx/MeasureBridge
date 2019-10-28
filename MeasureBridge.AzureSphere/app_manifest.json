@@ -9,7 +9,8 @@
     "SpiMaster": [ "ISU1" ],
     "I2cMaster": [ "ISU2" ],
     "Gpio": [ 1, 13, 43 ],
-    "WifiConfig": true
+    "WifiConfig": true,
+    "SystemTime": true
   },
   "ApplicationType":"Default"
 }

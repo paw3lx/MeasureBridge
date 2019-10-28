@@ -11,6 +11,7 @@
 #include "mt3620.h"
 #include "ac_current_click.h"
 #include "azure_iot_utilities.h"
+#include "time_helper.h"
 
 #include <applibs/log.h>
 #include <applibs/spi.h>
@@ -31,11 +32,11 @@ void AcCurrentEventHandler(EventData* eventData)
 	float ac = GetCurrentAC(3);
 	ac_current = ac;
 	Log_Debug("Current AC = %f \n", ac);
+	update_time_view();
 	UpdateOledState();
 	// send to iot hub
 	char* pjsonBuffer = (char*)malloc(204);
 	snprintf(pjsonBuffer, 204, "{\"%s\":\"%f\"}", "ACCurrent", ac);
-
 
 	Log_Debug("\n[Info] Sending ac %s\n", pjsonBuffer);
 	AzureIoT_SendMessage(pjsonBuffer);

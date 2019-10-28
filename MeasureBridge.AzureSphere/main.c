@@ -38,8 +38,8 @@ bool versionStringSent = false;
 int clickSocket1Relay1Fd = -1;
 int clickSocket1Relay2Fd = -1;
 
-bool clkBoardRelay1IsOn = true;
-bool clkBoardRelay2IsOn = true;
+bool clkBoardRelay1IsOn = false;
+bool clkBoardRelay2IsOn = false;
 
 static int buttonPollTimerFd = -1;
 static int buttonBGpioFd = -1;

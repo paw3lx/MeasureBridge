@@ -24,6 +24,7 @@
 #include "azure_iot_utilities.h"
 #include "parson.h"
 #include "i2c.h"
+#include "time_helper.h"
 
 extern bool clkBoardRelay1IsOn;
 extern bool clkBoardRelay2IsOn;
@@ -125,6 +126,28 @@ static void ClickBoardChangePeriodEventHandler(EventData* eventData)
 // event handler data structures. Only the event handler field needs to be populated.
 static EventData clickBoardChangEventData = { .eventHandler = &ClickBoardChangePeriodEventHandler };
 
+void checkTwinUpdateOfClickBoard(JSON_Object* desiredProperties, char* name)
+{
+	if (name == "clickBoardRelay1" && singleTimerFd == -1)
+	{
+		bool desiredValue = (bool)json_object_get_boolean(desiredProperties, name);
+		if (desiredValue != clkBoardRelay1IsOn)
+		{
+			if (desiredValue)
+			{
+				set_relay_start_time();
+			}
+			oled_state = 3;
+			struct timespec clickBoardChangePeriod = { 10, 0 };
+			singleTimerFd =
+				CreateSingleTimerFdAndAddToEpoll(epollFd, &clickBoardChangePeriod, &clickBoardChangEventData, EPOLLIN);
+			if (singleTimerFd < 0) {
+				return -1;
+			}
+		}
+	}
+}
+
 ///<summary>
 ///		Parses received desired property changes.
 ///</summary>
@@ -145,16 +168,8 @@ void deviceTwinChangedHandler(JSON_Object* desiredProperties)
 
 		if (json_object_has_value(desiredProperties, twinArray[i].twinKey) != 0)
 		{
-			if (twinArray[i].twinKey == "clickBoardRelay1" && singleTimerFd == -1)
-			{
-				oled_state = 2;
-				struct timespec clickBoardChangePeriod = { 10, 0 };
-				singleTimerFd =
-					CreateSingleTimerFdAndAddToEpoll(epollFd, &clickBoardChangePeriod, &clickBoardChangEventData, EPOLLIN);
-				if (singleTimerFd < 0) {
-					return -1;
-				}
-			}
+			checkTwinUpdateOfClickBoard(desiredProperties, twinArray[i].twinKey);
+
 			switch (twinArray[i].twinType) {
 			case TYPE_BOOL:
 				*(bool*)twinArray[i].twinVar = (bool)json_object_get_boolean(desiredProperties, twinArray[i].twinKey);

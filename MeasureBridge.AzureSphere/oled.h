@@ -11,6 +11,8 @@
 #define OLED_LINE_2_Y     26
 #define OLED_LINE_3_X     0
 #define OLED_LINE_3_Y     36
+#define OLED_LINE_4_X     0
+#define OLED_LINE_4_Y     46
 
 #define FONT_SIZE_TITLE   2
 #define FONT_SIZE_LINE    1
@@ -20,6 +22,8 @@ extern float ac_averageLastHour;
 extern float kWhToday;
 extern float kWhLast7Days;
 extern float kWhLastMonth;
+extern char currentTimeBuffer[26];
+extern char elapsedTimeBuffer[20];
 
 extern uint8_t oled_state;
 
@@ -32,6 +36,7 @@ void UpdateOledState(void);
 void UpdateConsumption(void);
 void UpdateProjections(void);
 void ShowClickState(void);
+void ShowTime(void);
 /**
   * @brief  Converts a given integer x to string uint8_t[]
   * @param  n: float number to convert

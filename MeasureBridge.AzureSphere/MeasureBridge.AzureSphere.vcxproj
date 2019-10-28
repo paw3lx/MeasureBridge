@@ -47,6 +47,7 @@
     <ClCompile Include="parson.c" />
     <ClCompile Include="sd1306.c" />
     <ClCompile Include="spi.c" />
+    <ClCompile Include="time_helper.c" />
     <UpToDateCheckInput Include="app_manifest.json" />
   </ItemGroup>
   <ItemGroup>
@@ -63,6 +64,7 @@
     <ClInclude Include="parson.h" />
     <ClInclude Include="sd1306.h" />
     <ClInclude Include="spi.h" />
+    <ClInclude Include="time_helper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

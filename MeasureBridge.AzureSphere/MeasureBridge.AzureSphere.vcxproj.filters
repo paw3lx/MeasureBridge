@@ -46,6 +46,9 @@
     <ClCompile Include="azure_iot_utilities.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="time_helper.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="applibs_versions.h">
@@ -85,6 +88,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="azure_iot_utilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="time_helper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

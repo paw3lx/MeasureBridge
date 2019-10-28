@@ -8,6 +8,7 @@ float ac_averageLastHour;
 float kWhToday;
 float kWhLast7Days;
 float kWhLastMonth;
+char currentTimeBuffer[26];
 bool clkBoardRelay1IsOn;
 
 /**
@@ -31,6 +32,9 @@ void update_oled()
 			UpdateProjections();
 			break;
 		case 2:
+			ShowTime();
+			break;
+		case 3:
 			ShowClickState();
 			break;
 	}
@@ -39,10 +43,10 @@ void update_oled()
 
 void UpdateOledState(void)
 {
-	if (oled_state < 2)
+	if (oled_state < 3)
 	{
 		oled_state += 1;
-		oled_state = oled_state % 2;
+		oled_state = oled_state % 3;
 	}
 	update_oled();
 }
@@ -134,6 +138,37 @@ void ShowClickState(void)
 	else {
 		sd1306_draw_string(OLED_TITLE_X, 40, "   O F F", FONT_SIZE_TITLE, white_pixel);
 	}
+	sd1306_refresh();
+}
+
+void ShowTime(void)
+{
+	clear_oled_buffer();
+	if (clkBoardRelay1IsOn == true) {
+		sd1306_draw_string(OLED_TITLE_X, OLED_TITLE_Y, "  RELAY ON", FONT_SIZE_TITLE, white_pixel);
+		uint8_t str_label2[] = "     ";
+		char elapsedTime[11];
+		strncpy(elapsedTime, elapsedTimeBuffer, 20);
+		elapsedTime[20] = '\0'; // place the null terminator
+
+		// Draw a label at line 1
+		sd1306_draw_string(OLED_LINE_2_X, OLED_LINE_2_Y, str_label2, FONT_SIZE_LINE, white_pixel);
+		// Draw the value of x
+		sd1306_draw_string(sizeof(str_label2) * 6, OLED_LINE_2_Y, elapsedTime, FONT_SIZE_LINE, white_pixel);
+	}
+	else {
+		sd1306_draw_string(OLED_TITLE_X, OLED_TITLE_Y, " RELAY OFF", FONT_SIZE_TITLE, white_pixel);
+	}
+	
+
+	char timeToDisplay[21];
+	strncpy(timeToDisplay, currentTimeBuffer, 20);
+	timeToDisplay[20] = '\0'; // place the null terminator
+	// Draw a label at line 1
+	sd1306_draw_string(OLED_LINE_4_X, OLED_LINE_4_Y, timeToDisplay, FONT_SIZE_LINE, white_pixel);
+
+
+
 	sd1306_refresh();
 }
 
