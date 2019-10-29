@@ -2,8 +2,8 @@
 
 #include "oled.h"
 
-int InitSpi(void);
+int init_spi(void);
 
-void closeSpi(void);
+void close_spi(void);
 
 extern int spiFd;

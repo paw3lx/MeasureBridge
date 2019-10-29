@@ -54,7 +54,7 @@ extern volatile sig_atomic_t terminationRequired;
 ///     Initializes the I2C interface.
 /// </summary>
 /// <returns>0 on success, or -1 on failure</returns>
-int initI2c(void) 
+int init_i2c(void) 
 {
 	i2cFd = I2CMaster_Open(MT3620_ISU2_I2C);
 	if (i2cFd < 0) {
@@ -87,7 +87,7 @@ int initI2c(void)
 /// <summary>
 ///     Closes the I2C interface File Descriptors.
 /// </summary>
-void closeI2c(void)
+void close_i2c(void)
 {
 	CloseFdAndPrintError(i2cFd, "i2c");
 }

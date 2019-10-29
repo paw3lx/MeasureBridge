@@ -9,7 +9,7 @@ void HAL_Delay(int delayTime);
 
 static float factor = 2.0;
 
-int ReadACCurrentBytes(uint8_t* byte_1, uint8_t* byte_2)
+int read_ac_current_bytes(uint8_t* byte_1, uint8_t* byte_2)
 {
 	static const uint8_t sampleCmd = 0x00;
 	static const size_t transferCount = 2;
@@ -42,11 +42,11 @@ int ReadACCurrentBytes(uint8_t* byte_1, uint8_t* byte_2)
 	return transferredBytes;
 }
 
-float GetCurrentADC(void)
+float get_current_adc(void)
 {
 	uint8_t byte_1 = 0, byte_2 = 0;
 	
-	ReadACCurrentBytes(&byte_1, &byte_2);
+	read_ac_current_bytes(&byte_1, &byte_2);
 
 	Log_Debug("byte1 = %d, byte2 = %d \n", byte_1, byte_2);
 
@@ -61,11 +61,11 @@ float GetCurrentADC(void)
 	return msb;
 }
 
-float GetCurrentAC(uint8_t measurements)
+float get_current_ac(uint8_t measurements)
 {
 	float average = 0.0;
 	for (uint8_t i = 0; i < measurements; i++) {
-		float adc = GetCurrentADC();
+		float adc = get_current_adc();
 		Log_Debug("adc = %f \n", adc);
 		average += adc;
 		HAL_Delay(100);

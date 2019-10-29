@@ -25,9 +25,9 @@ extern twin_t twinArray[];
 extern int twinArraySize;
 extern IOTHUB_DEVICE_CLIENT_LL_HANDLE iothubClientHandle;
 
-static int InitPeripheralsAndHandlers(void);
-static void TerminationHandler(int signalNumber);
-static void ClosePeripheralsAndHandlers(void);
+static int init_peripherals_and_handlers(void);
+static void termination_handler(int signalNumber);
+static void close_peripherals_and_handlers(void);
 
 int epollFd = -1;
 
@@ -38,8 +38,8 @@ bool versionStringSent = false;
 int clickSocket1Relay1Fd = -1;
 int clickSocket1Relay2Fd = -1;
 
-bool clkBoardRelay1IsOn = false;
-bool clkBoardRelay2IsOn = false;
+bool relay_1_is_on = false;
+bool relay_2_is_on = false;
 
 static int buttonPollTimerFd = -1;
 static int buttonBGpioFd = -1;
@@ -49,7 +49,7 @@ static GPIO_Value_Type buttonBState = GPIO_Value_High;
 int main(void)
 {
 	Log_Debug("MeasureBridge application starting.\n");
-	if (InitPeripheralsAndHandlers() != 0) {
+	if (init_peripherals_and_handlers() != 0) {
 		terminationRequired = true;
 	}
 
@@ -74,7 +74,7 @@ int main(void)
 		}
 	}
 
-	ClosePeripheralsAndHandlers();
+	close_peripherals_and_handlers();
 	Log_Debug("Application exiting.\n");
 }
 
@@ -139,11 +139,11 @@ static EventData buttonEventData = { .eventHandler = &ButtonTimerEventHandler };
 ///     Set up SIGTERM termination handler, initialize peripherals, and set up event handlers.
 /// </summary>
 /// <returns>0 on success, or -1 on failure</returns>
-static int InitPeripheralsAndHandlers(void)
+static int init_peripherals_and_handlers(void)
 {
 	struct sigaction action;
 	memset(&action, 0, sizeof(struct sigaction));
-	action.sa_handler = TerminationHandler;
+	action.sa_handler = termination_handler;
 	sigaction(SIGTERM, &action, NULL);
 
 	epollFd = CreateEpollFd();
@@ -151,11 +151,11 @@ static int InitPeripheralsAndHandlers(void)
 		return -1;
 	}
 
-	if (initI2c() == -1) {
+	if (init_i2c() == -1) {
 		return -1;
 	}
 
-	if (InitSpi() == -1) {
+	if (init_spi() == -1) {
 		return -1;
 	}
 
@@ -199,14 +199,14 @@ static int InitPeripheralsAndHandlers(void)
 	return 0;
 }
 
-static void TerminationHandler(int signalNumber)
+static void termination_handler(int signalNumber)
 {
 	terminationRequired = true;
 }
 
-static void ClosePeripheralsAndHandlers(void)
+static void close_peripherals_and_handlers(void)
 {
 	Log_Debug("Closing file descriptors.\n");
-	closeSpi();
-	closeI2c();
+	close_spi();
+	close_i2c();
 }

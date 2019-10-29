@@ -26,8 +26,8 @@
 #include "i2c.h"
 #include "time_helper.h"
 
-extern bool clkBoardRelay1IsOn;
-extern bool clkBoardRelay2IsOn;
+extern bool relay_1_is_on;
+extern bool relay_2_is_on;
 
 extern int clickSocket1Relay1Fd;
 extern int clickSocket1Relay2Fd;
@@ -43,9 +43,9 @@ static const char cstrDeviceTwinJsonString[] = "{\"%s\": \"%s\"}";
 static int desiredVersion = 0;
 
 float ac_averageLastHour = 0.0;
-float kWhToday = 0.0;
-float kWhLast7Days = 0.0;
-float kWhLastMonth = 0.0;
+float kwh_today = 0.0;
+float kwh_last_7_days = 0.0;
+float kwh_last_month = 0.0;
 
 int singleTimerFd = -1;
 
@@ -57,12 +57,12 @@ int singleTimerFd = -1;
 // .twinType - The data type for this item, TYPE_BOOL, TYPE_STRING, TYPE_INT, or TYPE_FLOAT
 // .active_high - true if GPIO item is active high, false if active low.  This is used to init the GPIO 
 twin_t twinArray[] = {
-	{.twinKey = "clickBoardRelay1",.twinVar = &clkBoardRelay1IsOn,.twinFd = &clickSocket1Relay1Fd,.twinGPIO = MT3620_GPIO1,.twinType = TYPE_BOOL,.active_high = true},
-	{.twinKey = "clickBoardRelay2",.twinVar = &clkBoardRelay2IsOn,.twinFd = &clickSocket1Relay2Fd,.twinGPIO = MT3620_GPIO43,.twinType = TYPE_BOOL,.active_high = true},
+	{.twinKey = "clickBoardRelay1",.twinVar = &relay_1_is_on,.twinFd = &clickSocket1Relay1Fd,.twinGPIO = MT3620_GPIO1,.twinType = TYPE_BOOL,.active_high = true},
+	{.twinKey = "clickBoardRelay2",.twinVar = &relay_2_is_on,.twinFd = &clickSocket1Relay2Fd,.twinGPIO = MT3620_GPIO43,.twinType = TYPE_BOOL,.active_high = true},
 	{.twinKey = "acAverageLastHour",.twinVar = &ac_averageLastHour,.twinFd = NULL,.twinGPIO = NO_GPIO_ASSOCIATED_WITH_TWIN,.twinType = TYPE_FLOAT,.active_high = true},
-	{.twinKey = "kWhToday",.twinVar = &kWhToday,.twinFd = NULL,.twinGPIO = NO_GPIO_ASSOCIATED_WITH_TWIN,.twinType = TYPE_FLOAT,.active_high = true},
-	{.twinKey = "kWhLast7Days",.twinVar = &kWhLast7Days,.twinFd = NULL,.twinGPIO = NO_GPIO_ASSOCIATED_WITH_TWIN,.twinType = TYPE_FLOAT,.active_high = true},
-	{.twinKey = "kWhLastMonth",.twinVar = &kWhLastMonth,.twinFd = NULL,.twinGPIO = NO_GPIO_ASSOCIATED_WITH_TWIN,.twinType = TYPE_FLOAT,.active_high = true}
+	{.twinKey = "kWhToday",.twinVar = &kwh_today,.twinFd = NULL,.twinGPIO = NO_GPIO_ASSOCIATED_WITH_TWIN,.twinType = TYPE_FLOAT,.active_high = true},
+	{.twinKey = "kWhLast7Days",.twinVar = &kwh_last_7_days,.twinFd = NULL,.twinGPIO = NO_GPIO_ASSOCIATED_WITH_TWIN,.twinType = TYPE_FLOAT,.active_high = true},
+	{.twinKey = "kWhLastMonth",.twinVar = &kwh_last_month,.twinFd = NULL,.twinGPIO = NO_GPIO_ASSOCIATED_WITH_TWIN,.twinType = TYPE_FLOAT,.active_high = true}
 };
 
 // Calculate how many twin_t items are in the array.  We use this to iterate through the structure.
@@ -131,7 +131,7 @@ void checkTwinUpdateOfClickBoard(JSON_Object* desiredProperties, char* name)
 	if (name == "clickBoardRelay1" && singleTimerFd == -1)
 	{
 		bool desiredValue = (bool)json_object_get_boolean(desiredProperties, name);
-		if (desiredValue != clkBoardRelay1IsOn)
+		if (desiredValue != relay_1_is_on)
 		{
 			if (desiredValue)
 			{

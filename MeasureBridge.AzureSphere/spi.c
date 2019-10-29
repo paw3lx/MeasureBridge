@@ -29,11 +29,11 @@ void AcCurrentEventHandler(EventData* eventData)
 		terminationRequired = true;
 		return;
 	}
-	float ac = GetCurrentAC(3);
+	float ac = get_current_ac(3);
 	ac_current = ac;
 	Log_Debug("Current AC = %f \n", ac);
 	update_time_view();
-	UpdateOledState();
+	update_oled_state();
 	// send to iot hub
 	char* pjsonBuffer = (char*)malloc(204);
 	snprintf(pjsonBuffer, 204, "{\"%s\":\"%f\"}", "ACCurrent", ac);
@@ -42,7 +42,7 @@ void AcCurrentEventHandler(EventData* eventData)
 	AzureIoT_SendMessage(pjsonBuffer);
 }
 
-int InitSpi(void)
+int init_spi(void)
 {
 	SPIMaster_Config config;
 	int ret = SPIMaster_InitConfig(&config);
@@ -81,7 +81,7 @@ int InitSpi(void)
 	return 0;
 }
 
-void closeSpi(void) {
+void close_spi(void) {
 
 	CloseFdAndPrintError(spiFd, "Spi");
 	CloseFdAndPrintError(acCurrentFd, "accelTimer");

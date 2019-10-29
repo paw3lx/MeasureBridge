@@ -19,11 +19,11 @@
 
 extern float ac_current; 
 extern float ac_averageLastHour;
-extern float kWhToday;
-extern float kWhLast7Days;
-extern float kWhLastMonth;
-extern char currentTimeBuffer[26];
-extern char elapsedTimeBuffer[20];
+extern float kwh_today;
+extern float kwh_last_7_days;
+extern float kwh_last_month;
+extern char current_time_buffer[26];
+extern char elapsed_time_buffer[20];
 
 extern uint8_t oled_state;
 
@@ -31,12 +31,12 @@ extern uint8_t oled_init(void);
 
 extern void update_oled(void);
 
-void UpdateOledState(void);
+void update_oled_state(void);
 
-void UpdateConsumption(void);
-void UpdateProjections(void);
-void ShowClickState(void);
-void ShowTime(void);
+void display_consumption(void);
+void display_projections(void);
+void display_relay_state(void);
+void display_time(void);
 /**
   * @brief  Converts a given integer x to string uint8_t[]
   * @param  n: float number to convert

@@ -9,8 +9,8 @@
 #include <stdio.h> 
 
 extern volatile sig_atomic_t terminationRequired;
-char currentTimeBuffer[26];
-char elapsedTimeBuffer[10];
+char current_time_buffer[26];
+char elapsed_time_buffer[10];
 
 struct timespec relayStartTime;
 
@@ -53,7 +53,7 @@ void update_current_time(void)
 		return;
 	}
 	else {
-		if (!asctime_r((localtime(&_currentTime.tv_sec)), (char* restrict) & currentTimeBuffer)) {
+		if (!asctime_r((localtime(&_currentTime.tv_sec)), (char* restrict) & current_time_buffer)) {
 			Log_Debug("ERROR: asctime_r failed with error code: %s (%d).\n", strerror(errno),
 				errno);
 			terminationRequired = true;
@@ -61,9 +61,9 @@ void update_current_time(void)
 		}
 
 		// Remove the new line at the end of 'displayTimeBuffer'
-		currentTimeBuffer[strlen(currentTimeBuffer) - 1] = '\0';
+		current_time_buffer[strlen(current_time_buffer) - 1] = '\0';
 		size_t tznameIndex = ((localtime(&_currentTime.tv_sec))->tm_isdst) ? 1 : 0;
-		Log_Debug("Local time:     %s %s\n", currentTimeBuffer, tzname[tznameIndex]);
+		Log_Debug("Local time:     %s %s\n", current_time_buffer, tzname[tznameIndex]);
 	}
 }
 
@@ -100,9 +100,9 @@ void update_relay_elapsed_time(void)
 
 			return;
 		}
-		strftime(elapsedTimeBuffer, 10, "%H:%M:%S", ptm);
+		strftime(elapsed_time_buffer, 10, "%H:%M:%S", ptm);
 		//print_time(relayStartTime);
-		Log_Debug("Diff: %s\n", elapsedTimeBuffer);
+		Log_Debug("Diff: %s\n", elapsed_time_buffer);
 	}
 }
 

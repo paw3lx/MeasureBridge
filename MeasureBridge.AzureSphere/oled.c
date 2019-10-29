@@ -5,11 +5,11 @@ uint8_t oled_state = 0;
 
 float ac_current;
 float ac_averageLastHour;
-float kWhToday;
-float kWhLast7Days;
-float kWhLastMonth;
-char currentTimeBuffer[26];
-bool clkBoardRelay1IsOn;
+float kwh_today;
+float kwh_last_7_days;
+float kwh_last_month;
+char current_time_buffer[26];
+bool relay_1_is_on;
 
 /**
   * @brief  OLED initialization.
@@ -26,22 +26,22 @@ void update_oled()
 	switch (oled_state)
 	{
 		case 0:
-			UpdateConsumption();
+			display_consumption();
 			break;
 		case 1:
-			UpdateProjections();
+			display_projections();
 			break;
 		case 2:
-			ShowTime();
+			display_time();
 			break;
 		case 3:
-			ShowClickState();
+			display_relay_state();
 			break;
 	}
 	
 }
 
-void UpdateOledState(void)
+void update_oled_state(void)
 {
 	if (oled_state < 3)
 	{
@@ -51,7 +51,7 @@ void UpdateOledState(void)
 	update_oled();
 }
 
-void UpdateConsumption(void)
+void display_consumption(void)
 {
 	clear_oled_buffer();
 	sd1306_draw_string(OLED_TITLE_X, OLED_TITLE_Y, "  Current", FONT_SIZE_TITLE, white_pixel);
@@ -90,7 +90,7 @@ void UpdateConsumption(void)
 	sd1306_refresh();
 }
 
-void UpdateProjections(void)
+void display_projections(void)
 {
 	clear_oled_buffer();
 	sd1306_draw_string(OLED_TITLE_X, OLED_TITLE_Y, "Consumption", FONT_SIZE_TITLE, white_pixel);
@@ -98,7 +98,7 @@ void UpdateProjections(void)
 	uint8_t kwh_today_string_data[10];
 	uint8_t str_label[] = "Today  [kWh]: ";
 	// Convert x value to string
-	ftoa(kWhToday, kwh_today_string_data, 4);
+	ftoa(kwh_today, kwh_today_string_data, 4);
 
 	// Draw a label at line 1
 	sd1306_draw_string(OLED_LINE_1_X, OLED_LINE_1_Y, str_label, FONT_SIZE_LINE, white_pixel);
@@ -108,7 +108,7 @@ void UpdateProjections(void)
 	uint8_t kwh_7days_string_data[10];
 	uint8_t str_label2[] = "7 days [kWh]: ";
 	// Convert x value to string
-	ftoa(kWhLast7Days, kwh_7days_string_data, 4);
+	ftoa(kwh_last_7_days, kwh_7days_string_data, 4);
 
 	// Draw a label at line 1
 	sd1306_draw_string(OLED_LINE_2_X, OLED_LINE_2_Y, str_label2, FONT_SIZE_LINE, white_pixel);
@@ -118,7 +118,7 @@ void UpdateProjections(void)
 	uint8_t str_label3[] = "Month  [kWh]: ";
 	uint8_t kwh_last_month_string_data[10];
 	// Convert x value to string
-	ftoa(kWhLastMonth, kwh_last_month_string_data, 4);
+	ftoa(kwh_last_month, kwh_last_month_string_data, 4);
 
 	// Draw a label at line 1
 	sd1306_draw_string(OLED_LINE_3_X, OLED_LINE_3_Y, str_label3, FONT_SIZE_LINE, white_pixel);
@@ -128,11 +128,11 @@ void UpdateProjections(void)
 	sd1306_refresh();
 }
 
-void ShowClickState(void)
+void display_relay_state(void)
 {
 	clear_oled_buffer();
 	sd1306_draw_string(OLED_TITLE_X, 16, " R E L A Y", FONT_SIZE_TITLE, white_pixel);
-	if (clkBoardRelay1IsOn == true) {
+	if (relay_1_is_on == true) {
 		sd1306_draw_string(OLED_TITLE_X, 40, "    O N", FONT_SIZE_TITLE, white_pixel);
 	}
 	else {
@@ -141,14 +141,14 @@ void ShowClickState(void)
 	sd1306_refresh();
 }
 
-void ShowTime(void)
+void display_time(void)
 {
 	clear_oled_buffer();
-	if (clkBoardRelay1IsOn == true) {
+	if (relay_1_is_on == true) {
 		sd1306_draw_string(OLED_TITLE_X, OLED_TITLE_Y, "  RELAY ON", FONT_SIZE_TITLE, white_pixel);
 		uint8_t str_label2[] = "     ";
 		char elapsedTime[11];
-		strncpy(elapsedTime, elapsedTimeBuffer, 20);
+		strncpy(elapsedTime, elapsed_time_buffer, 20);
 		elapsedTime[20] = '\0'; // place the null terminator
 
 		// Draw a label at line 1
@@ -162,7 +162,7 @@ void ShowTime(void)
 	
 
 	char timeToDisplay[21];
-	strncpy(timeToDisplay, currentTimeBuffer, 20);
+	strncpy(timeToDisplay, current_time_buffer, 20);
 	timeToDisplay[20] = '\0'; // place the null terminator
 	// Draw a label at line 1
 	sd1306_draw_string(OLED_LINE_4_X, OLED_LINE_4_Y, timeToDisplay, FONT_SIZE_LINE, white_pixel);

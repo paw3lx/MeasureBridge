@@ -6,8 +6,6 @@
 #include <signal.h>
 #include <stdint.h>
 
-int ReadACCurrentBytes(uint8_t* byte_1, uint8_t* byte_2);
-
-float GetCurrentADC(void);
-
-float GetCurrentAC(uint8_t measurements);
+int read_ac_current_bytes(uint8_t* byte_1, uint8_t* byte_2);
+float get_current_adc(void);
+float get_current_ac(uint8_t measurements);
