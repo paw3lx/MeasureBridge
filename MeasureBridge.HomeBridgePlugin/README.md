@@ -1,4 +1,4 @@
 ﻿# MeasureBridge.HomeBridgePlugin
 
 
-moved to separate repo https://www.npmjs.com/package/homebridge-azure-iot-hub-switch
+moved to separate repo https://github.com/paw3lx/MeasureBridge
