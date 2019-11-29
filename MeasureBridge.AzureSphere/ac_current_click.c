@@ -7,8 +7,6 @@
 extern int spiFd;
 void HAL_Delay(int delayTime);
 
-static float factor = 2.0;
-
 int read_ac_current_bytes(uint8_t* byte_1, uint8_t* byte_2)
 {
 	static const uint8_t sampleCmd = 0x00;
@@ -75,9 +73,7 @@ float get_current_ac(uint8_t measurements)
 
 	float ac = (float)(average / 4095.0) * 2.048;
 
-	ac = (float)ac / 3.5 * 30.0;
-	
-	ac = ac * factor;
+	ac = (float)ac / 8,5 * 30.0;
 
 	return ac;
 }
