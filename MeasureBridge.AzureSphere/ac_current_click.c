@@ -73,7 +73,7 @@ float get_current_ac(uint8_t measurements)
 
 	float ac = (float)(average / 4095.0) * 2.048;
 
-	ac = (float)ac / 8,5 * 30.0;
+	ac = (float)ac / 8.5 * 30.0;
 
 	return ac;
 }
