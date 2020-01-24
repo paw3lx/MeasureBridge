@@ -11,4 +11,4 @@ It's a set of projects:
 
 ## Project architecture 
 
-![Architecture](https://www.element14.com/community/servlet/JiveServlet/showImage/38-33793-788509/MeasureBridge.png)
+![Architecture](https://github.com/paw3lx/MeasureBridge/blob/master/img/MeasureBridge.png?raw=true)
